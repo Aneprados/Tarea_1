@@ -1,5 +1,5 @@
 
-from Character import Character
+from Chatter import Character
 from Shot import Shot  # Importing here to avoid circular imports
 import time
 

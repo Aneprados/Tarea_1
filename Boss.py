@@ -1,4 +1,5 @@
-from Opponent import Opponent
+
+from Opponet import Opponent
 
 class Boss(Opponent):
     def __init__(self, x, y, speed):
@@ -83,4 +84,3 @@ class Boss(Opponent):
         boss = Boss(self.x, self.y, self.speed)  # Create a boss with the current position and speed
         boss.is_final_boss = True  # Mark this character as the final boss
         return boss
-

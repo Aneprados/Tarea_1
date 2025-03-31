@@ -1,85 +1,72 @@
-from Opponent import Opponent
 
-class Boss(Opponent):
-    def __init__(self, x, y, speed):
-        # Llama al constructor de la clase base Opponent
-        super().__init__(x, y, speed * 2)  # El jefe final se mueve el doble de rápido
+from entity import Entity
+from Shot import Shot  # Import the Shot class
 
-    def special_attack(self):
-        # Implementa un ataque especial del jefe final
-        print("El jefe final realiza un ataque especial devastador.")
+class Character(Entity):
+    def __init__(self, lives):
+        super().__init__()
+        self.lives = lives
+
+
+    def move(self, direction):
+        """
+        Moves the character in the specified direction.
+        :param direction: A string indicating the direction (e.g., 'up', 'down', 'left', 'right').
+        """
+        if direction == 'up':
+            self.y -= 1
+        elif direction == 'down':
+            self.y += 1
+        elif direction == 'left':
+            self.x -= 1
+        elif direction == 'right':
+            self.x += 1
+        else:
+            raise ValueError("Invalid direction. Use 'up', 'down', 'left', or 'right'.")
+
+    def shoot(self):
+        """
+        Allows the character to shoot.
+        """
+        # Create a new shot instance at the character's current position
+        shot = Shot(self.x, self.y, direction="up")  # Assuming shots move 'up' by default
+
+        # Return the shot instance so it can be added to the game world or handled further
+        return shot
+
+    def collide(self, other_entity):
+        """
+        Handles collision with another entity.
+        :param other_entity: The entity this character collides with.
+        """
+        if self.is_alive and other_entity.is_alive:
+            # Example logic: reduce lives if the other entity is an enemy
+            if hasattr(other_entity, "is_enemy") and other_entity.is_enemy:
+                self.lives -= 1
+                if self.lives <= 0:
+                    self.is_alive = False
+                    print("Game Over! The character has no lives left.")
+                    # Logic to end the game can be added here
+
+            # Additional logic for colliding with the boss
+            if hasattr(other_entity, "is_boss") and other_entity.is_boss:
+                self.lives = 0
+                self.is_alive = False
+                print("Game Over! The boss defeated the character.")
+                # Logic to handle boss collision and end the game can be added here
 
     def reset(self):
-        # Resetea el estado del jefe final
-        super().reset()
-        print("El jefe final ha sido reseteado.")
-    def serialize(self):
-        """"
-        "Deserializa el estado del jefe final desde un diccionario."
         """
-        data = super().serialize()
-        data.update({
-            "special_attack": self.special_attack
-        })
-        return data
-    
-    def deserialize(self, data):
-        """"
-        "Deserializa el estado del jefe final desde un diccionario."
+        Resets the character's state.
         """
-        super().deserialize(data)
-        self.special_attack = data["special_attack"]
+        self.lives = 3
+        self.is_alive = True
+        # Reset other character-specific attributes here
+        pass
 
     def __str__(self):
         """
-        Devuelve una representación en cadena del jefe final.
-        :return: Una cadena que representa el estado del jefe final.
+        Returns a string representation of the character.
+        :return: A string representing the character's state.
         """
-        return f"Jefe Final en ({self.x}, {self.y}) con velocidad {self.speed}"
-    
-    def move(self):
-        # Implementa la lógica de movimiento del jefe final
-        print(f"El jefe final se mueve a ({self.x}, {self.y})")
-    def hit_target(self):
-        # Implementa la lógica para verificar si el jefe final golpea un objetivo
-        print("El jefe final ha golpeado un objetivo.")
-
-
-    def take_damage(self, damage):
-        """
-        Reduce la salud del jefe final al recibir daño.
-        :param damage: Cantidad de daño recibido.
-        """
-        self.health -= damage
-        print(f"El jefe final recibe {damage} de daño. Salud restante: {self.health}")
-        if self.health <= 0:
-            self.defeated()
-
-    def defeated(self):
-        """
-        Lógica para manejar cuando el jefe final es derrotado.
-        """
-        print("¡El jefe final ha sido derrotado!")
-
-    def is_final_boss(self):
-        """
-        Indica si este oponente es el jefe final.
-        :return: True, ya que esta clase representa al jefe final.
-        """
-        return True
-    
-    def is_boss(self):
-        """
-        Returns True if the character is a boss, False otherwise.
-        """
-        return hasattr(self, "is_final_boss") and self.is_final_boss()
-
-    def defeat_enemy(self):
-        """
-        Handles logic when the player defeats an enemy.
-        If an enemy is defeated, a final boss is spawned.
-        """
-        # Example logic to spawn a boss
-        boss = Boss(self.x, self.y, self.speed)  # Create a boss with the current position and speed
-        boss.is_final_boss = True  # Mark this character as the final boss
-        return boss
+        return f"Character with {self.lives} lives, alive: {self.is_alive}, position: ({self.x}, {self.y}), image: {self.image}"
