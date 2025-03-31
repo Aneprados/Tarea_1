@@ -1,23 +1,79 @@
-# Clase Shot
-import pygame
 
-class Shot:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.width = 5
-        self.height = 10
-        self.color = (255, 255, 255)  # Define WHITE as an RGB tuple
-        self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(self.color)
+from entity import Entity
 
+class Shot(Entity):
+
+    def __init__(self, x, y, image, speed):
+        """
+        Initializes a Shot object.
+        :param x: The x-coordinate of the shot.
+        :param y: The y-coordinate of the shot.
+        :param image: The image representing the shot.
+        :param speed: The speed of the shot.
+        """
+        super().__init__(x, y, image)
+        self.speed = speed
+        self.is_alive = True
+        self.is_star = False
+        self.is_bomb = False
+        self.is_bomb_exploded = False
+
+    def __str__(self):
+        """
+        Returns a string representation of the shot.
+        :return: A string representing the shot's state.
+        """
+        return f"Shot at ({self.x}, {self.y}) with speed {self.speed}, alive: {self.is_alive}, star: {self.is_star}, bomb: {self.is_bomb}"
+    
+            
     def move(self):
-        self.y -= 5  # The shot moves upward
+        # Implement logic to move the shot
+        pass
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+    def hit_target(self):
+        # Implement logic to check if the shot hits a target
+        pass
 
-    def collide(self, opponent):
-        shot_rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        opponent_rect = pygame.Rect(opponent.x, opponent.y, opponent.image.get_width(), opponent.image.get_height())
-        return shot_rect.colliderect(opponent_rect)
+    def explode(self):
+        # Implement logic for explosion
+        pass
+
+    def reset(self):
+        """
+        Resets the shot's state.
+        """
+        self.is_alive = True
+        self.is_star = False
+        self.is_bomb = False
+        self.is_bomb_exploded = False
+        # Reset other shot-specific attributes here
+        self.x = 0
+        self.y = 0
+        self.speed = 0
+
+    def serialize(self):
+        """
+        Serializes the shot's state.
+        :return: A dictionary representing the shot's state.
+        """
+        data = super().serialize()
+        data.update({
+            "speed": self.speed,
+            "is_alive": self.is_alive,
+            "is_star": self.is_star,
+            "is_bomb": self.is_bomb,
+            "is_bomb_exploded": self.is_bomb_exploded
+        })
+        return data
+    def deserialize(self, data):
+        """"
+        "Deserializes the shot's state from a dictionary."
+        """
+        super().deserialize(data)
+        self.speed = data["speed"]
+        self.is_alive = data["is_alive"]
+        self.is_star = data["is_star"]
+        self.is_bomb = data["is_bomb"]
+        self.is_bomb_exploded = data["is_bomb_exploded"]
+
+    

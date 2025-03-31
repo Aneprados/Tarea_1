@@ -1,38 +1,60 @@
 
-import pygame
-from Chatter import Character  # Assuming Character is defined in Character.py
-class Character:
-    def __init__(self, x, y, image):
-        self.x = x
-        self.y = y
-        self.image = image
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+from Chatter import Character
+from Shot import Shot  # Import the Shot class
 
 class Opponent(Character):
-    def __init__(self, x, y, image, is_star=False):
-        super().__init__(x, y, image)
+    def __init__(self, is_star=False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.is_star = is_star
 
-    def move(self):
-        self.y += 3  # Moverse hacia abajo
-
-    def shoot(self, bullet_image):
-        # Crear un disparo desde la posición del oponente
-        return Bullet(self.x + self.image.get_width() // 2, self.y + self.image.get_height(), bullet_image)
-
-    def collide(self, shot):
-        return self.image.get_rect(topleft=(self.x, self.y)).colliderect(shot.image.get_rect(topleft=(shot.x, shot.y)))
-
-class Bullet:
-    def __init__(self, x, y, image):
-        self.x = x
-        self.y = y
-        self.image = image
+    def __str__(self):
+        return f"Opponent with {self.lives} lives and is_star={self.is_star}"
 
     def move(self):
-        self.y += 5  # Moverse hacia abajo
+        """
+        Implements the logic for the opponent's movement.
+        Opponents move horizontally back and forth across the screen.
+        """
+        if self.position.x <= 0 or self.position.x >= self.screen_width - self.width:
+            self.velocity.x = -self.velocity.x  # Reverse direction when hitting screen edges
+        self.position.x += self.velocity.x
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+    def shoot(self):
+        """
+        Implements the logic for the opponent's shooting.
+        Creates a Shot instance and sets its initial position and velocity.
+        """
+        if self.is_alive:
+            # Create a new shot originating from the opponent's position
+            shot = Shot(
+                position=self.position.copy(),  # Start at the opponent's position
+                velocity=self.velocity.copy(),  # Use the opponent's velocity as a base
+                owner=self,  # Set the owner of the shot to this opponent
+                type="opponent_bullet"  # Specify the type of the shot
+            )
+            # Adjust the shot's velocity to move downward (towards the player)
+            shot.velocity.y = abs(shot.velocity.y)  # Ensure it moves downward
+            return shot
+        return None
+
+    def collide(self, other_entity):
+        """
+        Handles collision with another entity.
+        :param other_entity: The entity this opponent collides with.
+        """
+        if other_entity.type == "player_bullet":
+            self.is_alive = False
+            other_entity.owner.score += 1  # Increment the player's score
+        pass
+    def reset(self):
+        """"
+        "Resets the opponent's state.
+        """
+        self.lives = 3
+        self.is_alive = True
+        # Reset other opponent-specific attributes here
+        pass
+ 
+
+    

@@ -4,33 +4,35 @@ class Entity:
         self.y = y
         self.image = image
 
+    def __str__(self):
+        return f"Entity at ({self.x}, {self.y}) with image {self.image}"
+
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
 
-    def draw(self):
-        # Placeholder for drawing logic
-        print(f"Drawing entity at ({self.x}, {self.y}) with image {self.image}")
+    def get_position(self):
+        return self.x, self.y
     
+    def set_position(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def get_image(self):
+        return self.image
+    
+    def set_image(self, image):
+        self.image = image
+
     def collide(self, other):
         # Placeholder for collision detection logic
-        return False    
+        return self.x == other.x and self.y == other.y
     
-    def get_rect(self):
-        # Placeholder for getting the rectangle of the entity for collision detection
-        return pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
-    
-    def reset_position(self):
-        # Placeholder for resetting the position of the entity
+    def reset(self):
+        # Placeholder for reset logic
+        print(f"Resetting entity at ({self.x}, {self.y}) with image {self.image}")
         self.x = 0
         self.y = 0
-    
-    def is_off_screen(self):
-        # Placeholder for checking if the entity is off screen
-        return self.x < 0 or self.x > 800 or self.y < 0 or self.y > 600
-    
-    def update(self):
-        # Placeholder for updating the entity's state
-        pass
+        self.image = None
 
     

@@ -1,129 +1,187 @@
-#De aqui sale todo el juego
-import pygame
-import random
 from Player import Player
-import os
+from Opponent import Opponent
+from Boss import Boss  
 
-# Atributo de puntuación inicial
-self.score = 0
-
-opponent_path = os.path.join(os.path.dirname(__file__), "Opponent.py")
-if os.path.exists(opponent_path):
-    from Opponent import Opponent
-else:
-    raise ImportError(f"'Opponent.py' not found at {opponent_path}. Please create or place the file in the correct directory.")
-
-from Boss import Boss
+# The score attribute is already defined in the Game class's __init__ method.
 
 
-# Clase Game
 class Game:
     def __init__(self):
-        pygame.init()
-        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = 800, 600
-        self.FPS = 60
-        self.WHITE = (255, 255, 255)
-        self.BLACK = (0, 0, 0)
-
-        self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        pygame.display.set_caption("Shooting Game")
-        self.clock = pygame.time.Clock()
-        self.player = Player(400, 500, pygame.Surface((50, 50)))
-        self.player.image.fill(self.WHITE)
-        self.opponents = [Opponent(random.randint(0, self.SCREEN_WIDTH - 50), random.randint(-100, -40), pygame.Surface((50, 50))) for _ in range(5)]
-        for opponent in self.opponents:
-            opponent.image.fill((255, 0, 0))
-        self.shots = []
         self.score = 0
-        self.boss = None  # Inicialmente no hay jefe final
-        self.is_running = True
+        self.player = None
+        self.opponent = None
+        self.is_running = False
 
     def start(self):
-        while self.is_running:
-            self.update()
+        self.is_running = True
+        self.score = 0
+        print("Game started!")
 
     def update(self):
-        self.screen.fill(self.BLACK)
-        keys = pygame.key.get_pressed()
-
-        # Movimiento del jugador
-        self.player.move(keys)
-        self.player.draw(self.screen)
-
-        # Movimiento de los enemigos
-        for opponent in self.opponents:
-            opponent.move()
-            opponent.draw(self.screen)
-
-        # Movimiento del jefe final
-        if self.boss:
-            self.boss.move()
-            self.boss.draw(self.screen)
-
-        # Movimiento de los disparos
-        for shot in self.shots[:]:
-            shot.move()
-            shot.draw(self.screen)
-            if shot.y < 0 or shot.y > self.SCREEN_HEIGHT:
-                self.shots.remove(shot)
-
-        # Manejo de eventos
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.is_running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.shots.append(self.player.shoot())
-
-        # Detección de colisiones
-        for shot in self.shots[:]:
-            for opponent in self.opponents[:]:
-                if shot.collide(opponent):
-                    self.shots.remove(shot)
-                    self.opponents.remove(opponent)
-                    self.score += 1
-                    if not self.opponents and not self.boss:  # Si no quedan enemigos, aparece el jefe
-                        self.boss = Boss(random.randint(0, self.SCREEN_WIDTH - 50), -100, pygame.Surface((100, 100)))
-                        self.boss.image.fill((0, 255, 0))
-
-            if self.boss and shot.collide(self.boss):
-                self.shots.remove(shot)
-                self.boss.lives -= 1
-                if self.boss.lives <= 0:
-                    self.boss = None
-                    self.end_game()  # Mostrar mensaje de victoria antes de terminar el juego
-
-        # Mostrar puntuación y vidas
-        font = pygame.font.Font(None, 36)
-        score_text = font.render(f"Score: {self.score}", True, self.WHITE)
-        lives_text = font.render(f"Lives: {self.player.lives}", True, self.WHITE)
-        self.screen.blit(score_text, (10, 10))
-        self.screen.blit(lives_text, (10, 50))
-
-        pygame.display.flip()
-        self.clock.tick(self.FPS)
+        if self.is_running:
+            print("Game is updating...")
+            # Add logic to update game state here
+        else:
+            print("Game is not running.")
 
     def end_game(self):
-        font = pygame.font.Font(None, 72)
-        if self.boss is None and self.player.lives > 0:
-            message = "You Win!"
+        if isinstance(self.opponent, Boss) and self.lives > 0:
+            print("Congratulations! You defeated the final boss and won the game!")
         else:
-            message = "Game Over"
-        text = font.render(message, True, self.WHITE)
-        self.screen.fill(self.BLACK)
-        self.screen.blit(text, (self.SCREEN_WIDTH // 2 - text.get_width() // 2, self.SCREEN_HEIGHT // 2 - text.get_height() // 2))
-        pygame.display.flip()
-        pygame.time.wait(3000)
-        self.is_running = False  # Terminamos el juego después de mostrar el mensaje
+            print("Game ended!")
+        self.is_running = False
 
-        if __name__ == "__main__":
-            game = Game()
-            game.start()
+    def reset(self):
+        self.score = 0
+        self.player = None
+        self.opponent = None
+        self.is_running = False
+        print("Game has been reset.")
+
+    def initialize_player(self, player_name):
+        """
+        Initializes the player with a given name.
+        :param player_name: Name of the player.
+        """
+        self.player = Player(name=player_name)
+        print(f"Player {self.player.name} initialized with {self.player.lives} lives.")
+        self.player.initialize_lives()
+        self.player.score = 0
+        print(f"Player {self.player.name} starts with score {self.player.score}.")
+        self.player.lives = 3
+
+    def spawn_player(self, player_name):
+        """
+        Spawns a player in the game.
+        :param
+        player_name: Name of the player.
+        """
+        if self.is_running:
+            self.player = Player(name=player_name)
+            print(f"Player {self.player.name} spawned!")
+        else:
+            print("Game is not running. Cannot spawn player.")
+        self.player.lives = 3
+        print(f"Player {self.player.name} initialized with {self.player.lives} lives.")
+        self.player.score = 0
+        self.player = Player(name=player_name)
+        self.player.lives = 3
+        print(f"Player {self.player.name} initialized with {self.player.lives} lives.")
+
+
+    def update_player(self):
+        """
+        Updates the player's position and state.
+        """
+        if self.is_running and self.player:
+            print(f"Updating player {self.player.name}...")
+            # Add logic to update player's position here
+            self.player.move()
+            print(f"Player {self.player.name} is moving.")
+        else:
+            print("Game is not running or no player to update.")
+        self.player = Player(name=player_name)
+        self.player.lives = 3
+        print(f"Player {self.player.name} initialized with {self.player.lives} lives.")
+        self.player.score = 0
+ 
+
+    def spawn_opponent(self, is_star=False):
+        """
+        Spawns an opponent in the game.
+        :param is_star: Boolean indicating if the opponent is a star.
+        """
+        if self.is_running:
+            self.opponent = Opponent(is_star=is_star)
+            print(f"Opponent spawned! Is star: {is_star}")
+        else:
+            print("Game is not running. Cannot spawn opponent.")
+        self.opponent = Opponent(is_star=is_star)
+        self.opponent.lives = 3
+        print(f"Opponent {self.opponent} initialized with {self.opponent.lives} lives.")
+        self.opponent.score = 0
+        
+    def update_opponent(self):
+        """
+        Updates the opponent's position and state.
+        """
+        if self.is_running and self.opponent:
+            print(f"Updating opponent {self.opponent}...")
+            # Add logic to update opponent's position here
+            self.opponent.move()
+            if self.opponent.is_star:
+                print("Opponent is a star!")
+            else:
+                print("Opponent is not a star.")
+        else:
+            print("Game is not running or no opponent to update.")
+        self.opponent = Opponent(is_star=is_star)
+        self.opponent.lives = 3
+        print(f"Opponent {self.opponent} initialized with {self.opponent.lives} lives.")
+        self.opponent.score = 0
+        self.opponent = Opponent(is_star=is_star)
+
     
-    # Modificar la velocidad del jefe final
-    class Boss(Boss):  # Extendemos la clase Boss
-        def move(self):
-            self.y += self.speed * 2  # El jefe se mueve el doble de rápido
-            if self.y > self.SCREEN_HEIGHT:
-                self.y = -100
-                self.x = random.randint(0, self.SCREEN_WIDTH - self.image.get_width())
+    
+    def convert_enemy_to_star(self, enemy):
+        """
+        Converts an enemy to a star and increments the score.
+        :param enemy: The enemy to be converted.
+        """
+        if self.is_running and enemy:
+            print(f"Enemy {enemy} converted to a star!")
+            self.score += 1
+        else:
+            print("Game is not running or invalid enemy.")
+
+    def initialize_lives(self, lives=3):
+        """
+        Initializes the player's lives.
+        :param lives: Number of lives to start with.
+        """
+        self.lives = lives
+        print(f"Player starts with {self.lives} lives.")
+
+    def lose_life(self):
+        """
+        Decreases the player's lives by 1. Ends the game if lives reach 0.
+        """
+        if self.is_running and self.lives > 0:
+            self.lives -= 1
+            print(f"Player lost a life! Lives remaining: {self.lives}")
+            if self.lives == 0:
+                print("No lives remaining. Game over!")
+                self.end_game()
+        else:
+            print("Game is not running or no lives left.")
+
+    def spawn_boss(self):
+        """
+        Spawns a boss when the player defeats an enemy.
+        The boss moves twice as fast as a regular opponent.
+        """
+        if self.is_running:
+            self.opponent = Boss(speed_multiplier=2)
+            print("A boss has appeared! It moves twice as fast!")
+        else:
+            print("Game is not running. Cannot spawn a boss.")
+
+    def display_score_and_lives(self):
+        """
+        Displays the current score and remaining lives of the player.
+        """
+        if self.is_running:
+            print(f"Score: {self.score}, Lives: {self.lives}")
+        else:
+            print("Game is not running.")
+    
+    def remove_opponent(self):
+        """
+        Removes the current opponent and spawns a boss if the opponent is defeated.
+        """
+        if self.is_running and self.opponent:
+            print(f"Opponent {self.opponent} has been defeated!")
+            self.opponent = None
+            self.spawn_boss()
+        else:
+            print("Game is not running or no opponent to remove.")
