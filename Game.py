@@ -3,7 +3,9 @@ import pygame
 import random
 from Player import Player
 import os
-# Removed unused import
+
+# Atributo de puntuación inicial
+self.score = 0
 
 opponent_path = os.path.join(os.path.dirname(__file__), "Opponent.py")
 if os.path.exists(opponent_path):
@@ -113,3 +115,15 @@ class Game:
         pygame.display.flip()
         pygame.time.wait(3000)
         self.is_running = False  # Terminamos el juego después de mostrar el mensaje
+
+        if __name__ == "__main__":
+            game = Game()
+            game.start()
+    
+    # Modificar la velocidad del jefe final
+    class Boss(Boss):  # Extendemos la clase Boss
+        def move(self):
+            self.y += self.speed * 2  # El jefe se mueve el doble de rápido
+            if self.y > self.SCREEN_HEIGHT:
+                self.y = -100
+                self.x = random.randint(0, self.SCREEN_WIDTH - self.image.get_width())
