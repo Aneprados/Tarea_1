@@ -39,12 +39,12 @@ class Game:
         self.is_running = False
         print("Game has been reset.")
 
-    def initialize_player(self, player_name):
+    def initialize_player(self, player_name="DefaultPlayer"):  # Defaulting player_name to "DefaultPlayer"
         """
         Initializes the player with a given name.
         :param player_name: Name of the player.
         """
-        self.player = Player(name=player_name)
+        self.player = Player(name="DefaultPlayer")  # Defaulting player_name to "DefaultPlayer"
         print(f"Player {self.player.name} initialized with {self.player.lives} lives.")
         self.player.initialize_lives()
         self.player.score = 0
@@ -58,7 +58,7 @@ class Game:
         player_name: Name of the player.
         """
         if self.is_running:
-            self.player = Player(name=player_name)
+            self.player = Player(name="DefaultPlayer")  # Defaulting player_name to "DefaultPlayer"
             print(f"Player {self.player.name} spawned!")
         else:
             print("Game is not running. Cannot spawn player.")
@@ -93,11 +93,11 @@ class Game:
         :param is_star: Boolean indicating if the opponent is a star.
         """
         if self.is_running:
-            self.opponent = Opponent(is_star=is_star)
+            self.opponent = Opponent(is_star=False)  # Defaulting is_star to False
             print(f"Opponent spawned! Is star: {is_star}")
         else:
             print("Game is not running. Cannot spawn opponent.")
-        self.opponent = Opponent(is_star=is_star)
+        self.opponent = Opponent(is_star=False)  # Defaulting is_star to False
         self.opponent.lives = 3
         print(f"Opponent {self.opponent} initialized with {self.opponent.lives} lives.")
         self.opponent.score = 0

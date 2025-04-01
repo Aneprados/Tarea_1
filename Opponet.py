@@ -1,6 +1,4 @@
 
-
-
 from Chatter import Character
 from Shot import Shot  # Import the Shot class
 

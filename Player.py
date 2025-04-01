@@ -1,5 +1,5 @@
 
-from Chatter import Chatter
+from Chatter import Character
 from Shot import Shot  # Importing here to avoid circular imports
 import time
 
@@ -83,15 +83,3 @@ class Player(Character):
             print(f"{self.name} cannot respawn. No lives remaining.")
     
     
-    def serialize(self):    
-        """
-        Serializes the player's state.
-        :return: A dictionary representing the player's state.
-        """
-        data = super().serialize()
-        data.update({
-            'score': self.score,
-            'lives': self.lives,
-            'name': self.name
-        })
-        return data

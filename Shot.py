@@ -1,4 +1,5 @@
 
+
 from entity import Entity
 
 class Shot(Entity):
