@@ -1,20 +1,17 @@
 import pygame
-from Game import Game
 
-# Inicializar pygame
+# Asegúrate de que las clases y métodos como Game, spawn_player, etc., estén definidos correctamente
+from game_script import Game  # Importa tu clase Game desde otro archivo si es necesario
+
+# Inicialización de pygame
 pygame.init()
-
-# Configurar la ventana del juego
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Juego")
+screen = pygame.display.set_mode((800, 600))  # Cambia el tamaño de la ventana según sea necesario
 clock = pygame.time.Clock()
 
 if __name__ == "__main__":
     game = Game()
     game.start()
-    game.spawn_player("Player1")  # Asegúrate de que Player1 tenga valores predeterminados para x, y e image
+    game.spawn_player("Player1")
     game.spawn_opponent(is_star=True)
 
     running = True
@@ -26,10 +23,8 @@ if __name__ == "__main__":
         # Actualizar el estado del juego
         game.update_opponent()
         game.update_player()
-        if game.player:
-            game.player.shoot()
-        if game.opponent:
-            game.opponent.shoot()
+        game.player.shoot()
+        game.opponent.shoot()
         game.update()
 
         # Dibujar en la pantalla

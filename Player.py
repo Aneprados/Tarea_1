@@ -1,19 +1,17 @@
-
-from Chatter import Character
+from Chatter import Character, Entity  # Asegúrate de que Entity esté disponible
 from Shot import Shot  # Importing here to avoid circular imports
 import time
 
 
-
 class Player(Character):
-    def __init__(self, name, score=0, lives=3):
+    def __init__(self, name, x=0, y=0, image="default_player_image.png", score=0, lives=3):
         super().__init__(name)
+        Entity.__init__(self, x, y, image)  # Explicitly call Entity's __init__ with required arguments
         self.score = score
         self.lives = lives
 
-    
     def __str__(self):
-        return f"Player {self.name} with score {self.score} and lives {self.lives}"
+        return f"Player {self.name} at ({self.x}, {self.y}) with score {self.score} and lives {self.lives}"
 
     def move(self, direction):
         """
@@ -27,19 +25,22 @@ class Player(Character):
 
         # Example logic for movement
         if direction == 'up':
-            print(f"{self.name} moves up.")
+            self.y -= 1
+            print(f"{self.name} moves up to ({self.x}, {self.y}).")
         elif direction == 'down':
-            print(f"{self.name} moves down.")
+            self.y += 1
+            print(f"{self.name} moves down to ({self.x}, {self.y}).")
         elif direction == 'left':
-            print(f"{self.name} moves left.")
+            self.x -= 1
+            print(f"{self.name} moves left to ({self.x}, {self.y}).")
         elif direction == 'right':
-            print(f"{self.name} moves right.")
+            self.x += 1
+            print(f"{self.name} moves right to ({self.x}, {self.y}).")
 
     def shoot(self):
         """
         Creates a shot fired by the player.
         """
-
         shot = Shot(self.name, is_enemy_shot=False)
         print(f"{self.name} shoots a shot!")
         return shot
@@ -67,9 +68,9 @@ class Player(Character):
         # Reset player-specific attributes
         self.score = 0
         self.lives = 3
-        print(f"{self.name} has been reset.")
-    
-  
+        self.x = 0
+        self.y = 0
+        print(f"{self.name} has been reset to position ({self.x}, {self.y}).")
 
     def respawn(self):
         """
@@ -78,8 +79,6 @@ class Player(Character):
         if self.lives > 0:
             print(f"{self.name} is respawning...")
             time.sleep(2)  # Simulate a brief delay for respawning
-            print(f"{self.name} has respawned!")
+            print(f"{self.name} has respawned at position ({self.x}, {self.y})!")
         else:
             print(f"{self.name} cannot respawn. No lives remaining.")
-    
-    
