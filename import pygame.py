@@ -1,7 +1,7 @@
 import pygame
 
-# Asegúrate de que las clases y métodos como Game, spawn_player, etc., estén definidos correctamente
-from game_script import Game  # Importa tu clase Game desde otro archivo si es necesario
+# Importar la clase Game desde Game.py
+from Game import Game  # Cambiado de game_script a Game
 
 # Inicialización de pygame
 pygame.init()
@@ -23,8 +23,10 @@ if __name__ == "__main__":
         # Actualizar el estado del juego
         game.update_opponent()
         game.update_player()
-        game.player.shoot()
-        game.opponent.shoot()
+        if game.player:
+            game.player.shoot()
+        if hasattr(game, 'opponent') and game.opponent:
+            game.opponent.shoot()
         game.update()
 
         # Dibujar en la pantalla
