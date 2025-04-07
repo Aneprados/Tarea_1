@@ -3,12 +3,12 @@ from Shot import Shot  # Importing here to avoid circular imports
 import time
 
 
-class Player(Character):
-    def __init__(self, name, x=0, y=0, image="default_player_image.png", score=0, lives=3):
-        super().__init__(name)
-        Entity.__init__(self, x, y, image)  # Explicitly call Entity's __init__ with required arguments
-        self.score = score
-        self.lives = lives
+from Chatter import Chatter
+
+class Player(Chatter):
+    def __init__(self, name, x=0, y=0, image=None):
+        super().__init__(name, x, y, image)
+        # Aquí puedes agregar atributos específicos del jugadors
 
     def __str__(self):
         return f"Player {self.name} at ({self.x}, {self.y}) with score {self.score} and lives {self.lives}"

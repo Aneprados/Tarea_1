@@ -2,11 +2,12 @@
 from entity import Entity
 from Shot import Shot  # Import the Shot class
 
-class Character(Entity):
-    def __init__(self, lives):
-        super().__init__()
-        self.lives = lives
+from entity import Entity
 
+class Chatter(Entity):
+    def __init__(self, name, x=0, y=0, image=None):
+        super().__init__(x, y, image)
+        self.name = name
 
     def move(self, direction):
         """

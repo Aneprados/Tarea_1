@@ -4,7 +4,11 @@ class Entity:
         self.x = x
         self.y = y
         self.image = image
+        self.is_alive = True
+        self.is_star = False
+        self.is_bomb = False
 
+        
     def __str__(self):
         return f"Entity at ({self.x}, {self.y}) with image {self.image}"
 

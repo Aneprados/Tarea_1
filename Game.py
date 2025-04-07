@@ -79,7 +79,19 @@ class Game:
         """
         print(f"Opponent spawned. Is star: {is_star}")      
     
-
+    def spawn_player(self, player_name, x=100, y=100, image="player_image.png"):
+        """
+        Spawns a player in the game with default or specified attributes.
+        :param player_name: Name of the player.
+        :param x: X-coordinate of the player.
+        :param y: Y-coordinate of the player.
+        :param image: Image associated with the player.
+        """
+        if self.is_running:
+            self.player = Player(name=player_name, x=x, y=y, image=image)
+            print(f"Player {self.player.name} spawned at ({x}, {y}) with image '{image}'!")
+        else:
+            print("Game is not running. Cannot spawn player.")
 
     # Añadimos un método para manejar oponentes
     def spawn_opponent(is_star=False):
