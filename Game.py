@@ -1,11 +1,4 @@
-class Player:
-    """
-    A simple Player class to represent a player in the game.
-    """
-    def __init__(self, name):
-        self.name = name
-        self.lives = 0
-        self.score = 0
+from Player import Player
 
 
 class Game:
@@ -78,3 +71,33 @@ class Game:
         Updates the general game state.
         """
         print("Game state updated.")
+
+    def spawn_opponent(self, is_star=False):
+        """
+        Spawns an opponent in the game.
+        :param is_star: Boolean indicating if the opponent is a star.
+        """
+        print(f"Opponent spawned. Is star: {is_star}")      
+    
+
+
+    # Añadimos un método para manejar oponentes
+    def spawn_opponent(is_star=False):
+        """
+        Método temporal para manejar la creación de un oponente.
+        :param is_star: Indica si el oponente es especial.
+        """
+        if is_star:
+            print("Star opponent spawned!")
+        else:
+            print("Regular opponent spawned!")
+
+    # Llamamos al método para crear un oponente
+    spawn_opponent(is_star=True)
+
+    def spawn_opponent(self, is_star=False):
+        """
+        Spawns an opponent in the game.
+        :param is_star: Boolean indicating if the opponent is a star.
+        """
+        print(f"Opponent spawned. Is star: {is_star}")   
